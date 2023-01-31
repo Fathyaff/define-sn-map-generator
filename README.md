@@ -2,7 +2,14 @@
 This is a File SN Mapping Generator with input serial number files.
 The application handles reading file consists of predefine serial numbers and map them based on criteria.
 
+## Pre-requisite
+* git installed
+* mvn installed
+
 ## How to Use
+* Clone this repository by run this command:
+`$ git clone git@github.com:Fathyaff/define-sn-map-generator.git`
+
 * This application is API based application which receives several parameters and multipart file. 
 * Prepare these request parameters value
 ```json

@@ -44,7 +44,9 @@ public class DefinedSnMapGeneratorUseCase implements DefinedSnMapGenerator {
         }
     }
 
-    private void writeReminingSnFile(Deque<String> serialNumbers, ZipOutputStream zos) throws IOException {
+    private void writeReminingSnFile(
+        Deque<String> serialNumbers, ZipOutputStream zos
+    ) throws IOException {
         String remainingSnFilename = String.format("remaining-sn-%s.csv", serialNumbers.size());
         ZipEntry secondFileEntry = new ZipEntry(remainingSnFilename);
         zos.putNextEntry(secondFileEntry);
@@ -88,13 +90,26 @@ public class DefinedSnMapGeneratorUseCase implements DefinedSnMapGenerator {
     ) {
         ZipEntry secondFileEntry = new ZipEntry(boxFileName);
         zos.putNextEntry(secondFileEntry);
-        for (String boxSerialNumber : boxSerialNumbers) {
-            String data = String.format("%s;%s;%s\n",
-                boxSerialNumber, cmd.getTimeStamp(), cmd.getProductCode()
-            );
+        for (int index = 0; index < boxSerialNumbers.size(); index++) {
+            String data = getDataLine(cmd, index, boxSerialNumbers);
             zos.write(data.getBytes(StandardCharsets.UTF_8), 0, data.length());
         }
+
         zos.closeEntry();
+    }
+
+    private String getDataLine(
+        DefinedSnMapGeneratorRequest cmd, int index, List<String> boxSerialNumbers
+    ) {
+        if (index == boxSerialNumbers.size() - 1) {
+            return String.format("%s;%s;%s",
+                boxSerialNumbers.get(index), cmd.getTimeStamp(), cmd.getProductCode()
+            );
+        }
+
+        return String.format("%s;%s;%s\n",
+            boxSerialNumbers.get(index), cmd.getTimeStamp(), cmd.getProductCode()
+        );
     }
 
     @SneakyThrows
@@ -126,16 +141,26 @@ public class DefinedSnMapGeneratorUseCase implements DefinedSnMapGenerator {
         Deque<String> serialNumbers,
         ZipOutputStream zos
     ) {
-        for (int j = 1; j <= cmd.getQuantityBottle(); j++) {
+        for (int index = 1; index <= cmd.getQuantityBottle(); index++) {
             String child = serialNumbers.pop();
-            String childData = String.format("%s;%s;%s\n", child, cmd.getTimeStamp(),
-                cmd.getProductCode()
-            );
+            String childData = getChildLine(cmd, index, child);
 
             zos.write(childData.getBytes(StandardCharsets.UTF_8), 0,
                 childData.length()
             );
         }
+    }
+
+    private String getChildLine(DefinedSnMapGeneratorRequest cmd, int index, String child) {
+        if (index == cmd.getQuantityBottle()) {
+            return String.format("%s;%s;%s", child, cmd.getTimeStamp(),
+                cmd.getProductCode()
+            );
+        }
+
+        return String.format("%s;%s;%s\n", child, cmd.getTimeStamp(),
+            cmd.getProductCode()
+        );
     }
 
 }

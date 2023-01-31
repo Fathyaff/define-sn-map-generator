@@ -27,7 +27,7 @@ The application handles reading file consists of predefine serial numbers and ma
 ```
 curl --location --request POST 'http://localhost:8001/map-generator/define-sn?productCode=SKU&proId=PRO&batchId=BATCH&totalPallet=2&quantityBox=2&quantityBottle=3&locationCode=PFT1&locationNo=L1' \
 --header 'Cookie: SESSION=a7ba04d5-781c-4fa5-b8a0-39f32c038fd9' \
---form 'file=@"/Users/mekari/Downloads/A070102340-5190.csv"'
+--form 'file=@"/path/to/file"'
 ```
 
 * Prepare CSV file which consists of serial numbers which will be used for serial number mapping.
